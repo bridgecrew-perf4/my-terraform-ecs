@@ -28,7 +28,7 @@ ECS_ENABLE_TASK_IAM_ROLE_NETWORK_HOST=true
 ECS_LOGFILE=/log/ecs-agent.log
 ECS_AVAILABLE_LOGGING_DRIVERS=["json-file","awslogs"]
 ECS_LOGLEVEL=info
-ECS_CLUSTER=default
+ECS_CLUSTER=${ecs_cluster_name}
 EOF
 
 # Write systemd unit file
@@ -59,5 +59,5 @@ EOF
 
 rm -rf /tmp/ecs-agent.tar
 
-#systemctl enable docker-container@ecs-agent.service
-#systemctl start docker-container@ecs-agent.service
+systemctl enable docker-container@ecs-agent.service
+systemctl start docker-container@ecs-agent.service

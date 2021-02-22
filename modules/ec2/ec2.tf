@@ -3,7 +3,13 @@ resource "aws_key_pair" "key_pair" {
   public_key = "${file("${var.key_path}")}"
 
   provisioner "local-exec" {
-    command = "echo ${aws_key_pair.key_pair.public_key} | tee -a /root/.ssh/ec2_key.pub"
+    command = "echo ${aws_key_pair.key_pair.public_key} | tee -a /root/.ssh/ec2_key.pub; echo ${var.ecs_cluster}"
+  }
+}
+
+locals {
+  vars = {
+    ecs_cluster_name = "${var.ecs_cluster}"
   }
 }
 
@@ -16,7 +22,7 @@ resource "aws_instance" "instance" {
     subnet_id                   = "${var.subnet_id}"
 	vpc_security_group_ids		= "${var.vpc_security_group_ids}"
     monitoring                  = "${var.monitoring}"
-    #iam_instance_profile        = "${var.iam_instance_profile}"
+    iam_instance_profile        = "${var.iam_instance_profile}"
 
     associate_public_ip_address = "${var.enable_associate_public_ip_address}"
     private_ip                  = "${var.private_ip}"
@@ -47,3 +53,5 @@ resource "aws_instance" "instance" {
 
     depends_on = ["aws_key_pair.key_pair"]
 }
+
+

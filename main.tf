@@ -21,19 +21,20 @@ module "aws_vpc" {
     enable_internet_gateway				= "true"
 }
 
-module "ec2" {
-	source                              = "./modules/ec2"
-	name								= "myEC2"
-	environment                         = "test"
-	vpc_security_group_ids				= ["${module.aws_vpc.security_group_id}"]
-	subnet_id							= "${module.aws_vpc.publicsubnet_id_0}"
-    key_path							= "/root/.ssh/id_rsa.pub"
-	iam_instance_profile				= "${module.iam.iam-profile-name}"
-}
-
 module "ecs" {
 	source                              = "./modules/ecs"
 	name								= "my-ecs"
-	ecs-cluster-name					= "my-ec2-ecs-cluster"
+	ecs-cluster-name					= "ec2-cluster"
 	environment                         = "test"
+}
+
+module "ec2" {
+    source                              = "./modules/ec2"
+    name                                = "myEC2"
+    environment                         = "test"
+    vpc_security_group_ids              = ["${module.aws_vpc.security_group_id}"]
+    subnet_id                           = "${module.aws_vpc.publicsubnet_id_0}"
+    key_path                            = "/root/.ssh/id_rsa.pub"
+    iam_instance_profile                = "${module.iam.iam-profile-name}"
+    ecs_cluster		                    = "${module.ecs.ecs_cluster_name}"
 }

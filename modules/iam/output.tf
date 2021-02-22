@@ -1,5 +1,5 @@
 output "iam-arn" {
-	value = "${aws_iam_role.ecs-role.arn}"
+	value = "${aws_iam_role.my_ecs_role.arn}"
 }
 
 output "iam-profile-name" {
