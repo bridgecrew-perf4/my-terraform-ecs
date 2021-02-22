@@ -28,36 +28,21 @@ ECS_ENABLE_TASK_IAM_ROLE_NETWORK_HOST=true
 ECS_LOGFILE=/log/ecs-agent.log
 ECS_AVAILABLE_LOGGING_DRIVERS=["json-file","awslogs"]
 ECS_LOGLEVEL=info
-ECS_CLUSTER="${ecs_cluster_name}"
+ECS_CLUSTER=${ecs_cluster_name}
 EOF
 
-# Write systemd unit file
-cat << EOF > /etc/systemd/system/docker-container@ecs-agent.service
-[Unit]
-Description=Docker Container %I
-Requires=docker.service
-After=cloud-final.service
-
-[Service]
-Restart=always
-ExecStartPre=-/usr/bin/docker rm -f %i 
-ExecStart=/usr/bin/docker run --name %i \
---privileged \
+docker run --name ecs-agent \
+--detach=true \
 --restart=on-failure:10 \
 --volume=/var/run:/var/run \
---volume=/var/log/ecs/:/log:Z \
---volume=/var/lib/ecs/data:/data:Z \
+--volume=/var/log/ecs/:/log \
+--volume=/var/lib/ecs/data:/data \
 --volume=/etc/ecs:/etc/ecs \
 --net=host \
 --env-file=/etc/ecs/ecs.config \
 amazon/amazon-ecs-agent:latest
-ExecStop=/usr/bin/docker stop %i
-
-[Install]
-WantedBy=default.target
-EOF
 
 rm -rf /tmp/ecs-agent.tar
 
-systemctl enable docker-container@ecs-agent.service
-systemctl start docker-container@ecs-agent.service
+#systemctl enable --now docker-container@ecs-agent.service
+#systemctl restart docker-container@ecs-agent.service
