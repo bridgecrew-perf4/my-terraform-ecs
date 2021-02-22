@@ -1,10 +1,27 @@
-resource "aws_key_pair" "key_pair" {
-  key_name = "${lower(var.name)}-key_pair-${lower(var.environment)}"
-  public_key = "${file("${var.key_path}")}"
+#resource "aws_key_pair" "key_pair" {
+#  key_name = "${lower(var.name)}-key_pair-${lower(var.environment)}"
+#  public_key = "${file("${var.key_path}")}"
+#
+#  provisioner "local-exec" {
+#    command = "echo ${aws_key_pair.key_pair.public_key} | tee -a /root/.ssh/ec2_key.pub"
+#  }
+#}
 
-  provisioner "local-exec" {
-    command = "echo ${aws_key_pair.key_pair.public_key} | tee -a /root/.ssh/ec2_key.pub"
-  }
+resource "aws_key_pair" "my_keypair" {
+    key_name   = "${uuid()}"
+    public_key = "${tls_private_key.t.public_key_openssh}"
+}
+provider "tls" {}
+resource "tls_private_key" "t" {
+    algorithm = "RSA"
+}
+provider "local" {}
+resource "local_file" "key" {
+    content  = "${tls_private_key.t.private_key_pem}"
+    filename = "/root/.ssh/ec2_key"
+    provisioner "local-exec" {
+        command = "chmod 600 /root/.ssh/ec2_key"
+    }
 }
 
 resource "aws_instance" "instance" {
@@ -12,7 +29,7 @@ resource "aws_instance" "instance" {
 
     ami                         = "${lookup(var.ami, var.region)}"
     instance_type               = "${var.ec2_instance_type}"
-    key_name                    = "${aws_key_pair.key_pair.id}"
+    key_name                    = "${aws_key_pair.my_keypair.id}"
     subnet_id                   = "${var.subnet_id}"
 	vpc_security_group_ids		= "${var.vpc_security_group_ids}"
     monitoring                  = "${var.monitoring}"
@@ -49,7 +66,7 @@ resource "aws_instance" "instance" {
         Createdby       = "${var.createdby}"
     }
 
-    depends_on = ["aws_key_pair.key_pair"]
+    depends_on = ["aws_key_pair.my_keypair"]
 }
 
 
