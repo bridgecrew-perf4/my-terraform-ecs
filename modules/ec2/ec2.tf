@@ -3,7 +3,7 @@ resource "aws_key_pair" "key_pair" {
   public_key = "${file("${var.key_path}")}"
 
   provisioner "local-exec" {
-    command = "echo ${aws_key_pair.key_pair.public_key} | tee -a /root/.ssh/ec2_key.pem"
+    command = "echo ${aws_key_pair.key_pair.public_key} | tee -a /root/.ssh/ec2_key.pub"
   }
 }
 
@@ -18,12 +18,8 @@ resource "aws_instance" "instance" {
     monitoring                  = "${var.monitoring}"
     #iam_instance_profile        = "${var.iam_instance_profile}"
 
-    # Note: network_interface can't be specified together with associate_public_ip_address
-    #network_interface           = "${var.network_interface}"
     associate_public_ip_address = "${var.enable_associate_public_ip_address}"
     private_ip                  = "${var.private_ip}"
-    #ipv6_address_count          = "${var.ipv6_address_count}"
-    #ipv6_addresses              = "${var.ipv6_addresses}"
 
     source_dest_check                    = "${var.source_dest_check}"
     disable_api_termination              = "${var.disable_api_termination}"
@@ -35,16 +31,10 @@ resource "aws_instance" "instance" {
     volume_tags            = "${var.volume_tags}"
     root_block_device {
         volume_size = "${var.disk_size}"
-    #    volume_type = "gp2"
     }
-    #ebs_block_device       = "${var.ebs_block_device}"
-    #ephemeral_block_device = "${var.ephemeral_block_device}"
 
     lifecycle {
-        create_before_destroy = true
-        # Due to several known issues in Terraform AWS provider related to arguments of aws_instance:
-        # (eg, https://github.com/terraform-providers/terraform-provider-aws/issues/2036)
-        # we have to ignore changes in the following arguments
+        create_before_destroy = false
     }
 	user_data = "${file("modules/ec2/script/user-data.sh")}"
 
