@@ -3,14 +3,7 @@ resource "aws_key_pair" "key_pair" {
   public_key = "${file("${var.key_path}")}"
 
   provisioner "local-exec" {
-    command = "echo ${aws_key_pair.key_pair.public_key} | tee -a /root/.ssh/ec2_key.pub; echo ${var.ecs_cluster}"
-  }
-}
-
-data "template_file" "init" {
-  template = "${file("modules/ec2/script/user-data.sh")}"
-  vars = {
-    ecs_cluster_name = "${var.ecs_cluster}"
+    command = "echo ${aws_key_pair.key_pair.public_key} | tee -a /root/.ssh/ec2_key.pub"
   }
 }
 
@@ -44,7 +37,10 @@ resource "aws_instance" "instance" {
         create_before_destroy = false
     }
 
-	user_data = "${file("modules/ec2/script/user-data.sh")}"
+	#user_data = "${file("modules/ec2/script/user-data.sh")}"
+    user_data = templatefile("modules/ec2/script/user-data.sh.tpl", {
+		ecs_cluster_name = "${var.ecs_cluster}"
+	})
 
     tags = {
         Name            = "${lower(var.name)}-ec2-${lower(var.environment)}-${count.index+1}"
