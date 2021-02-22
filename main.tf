@@ -38,3 +38,7 @@ module "ec2" {
     iam_instance_profile                = "${module.iam.iam-profile-name}"
     ecs_cluster		                    = "${module.ecs.ecs_cluster_name}"
 }
+
+output "connection-string" {
+	value = module.ec2.ec2_public_ip
+}
