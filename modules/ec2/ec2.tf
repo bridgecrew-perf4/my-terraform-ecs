@@ -69,4 +69,6 @@ resource "aws_instance" "instance" {
     depends_on = ["aws_key_pair.my_keypair"]
 }
 
-
+output "ec2_instance_type" {
+    value = aws_instance.instance.*.instance_type
+}
