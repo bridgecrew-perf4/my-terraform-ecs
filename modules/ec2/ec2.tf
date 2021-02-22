@@ -7,7 +7,8 @@ resource "aws_key_pair" "key_pair" {
   }
 }
 
-locals {
+data "template_file" "init" {
+  template = "${file("modules/ec2/script/user-data.sh")}"
   vars = {
     ecs_cluster_name = "${var.ecs_cluster}"
   }
@@ -42,6 +43,7 @@ resource "aws_instance" "instance" {
     lifecycle {
         create_before_destroy = false
     }
+
 	user_data = "${file("modules/ec2/script/user-data.sh")}"
 
     tags = {
