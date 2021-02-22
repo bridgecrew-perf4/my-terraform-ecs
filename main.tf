@@ -3,6 +3,12 @@ provider "aws" {
   shared_credentials_file = "~/.aws/credentials"
 }
 
+module "iam" {
+    source                              = "./modules/iam"
+    name                                = "myEC2"
+    environment                         = "test"
+}
+
 module "aws_vpc" {
     source                              = "./modules/vpc"
     name                                = "my-vpc"
@@ -18,9 +24,11 @@ module "aws_vpc" {
 module "ec2" {
 	source                              = "./modules/ec2"
 	name								= "myEC2"
+	environment                         = "test"
 	vpc_security_group_ids				= ["${module.aws_vpc.security_group_id}"]
 	subnet_id							= "${module.aws_vpc.publicsubnet_id_0}"
     key_path							= "/root/.ssh/id_rsa.pub"
+	iam_instance_profile				= "${module.iam.iam-profile-name}"
 }
 
 module "ecs" {

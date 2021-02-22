@@ -23,7 +23,7 @@ variable "orchestration" {
 
 variable "createdby" {
     description = "Created by"
-    default     = "Vitaliy Natarov"
+    default     = "uglykoyote"
 }
 
 variable "ami" {

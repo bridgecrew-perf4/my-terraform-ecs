@@ -1,6 +1,10 @@
 resource "aws_key_pair" "key_pair" {
   key_name = "${lower(var.name)}-key_pair-${lower(var.environment)}"
   public_key = "${file("${var.key_path}")}"
+
+  provisioner "local-exec" {
+    command = "echo ${aws_key_pair.key_pair.public_key} | tee -a /root/.ssh/ec2_key.pem"
+  }
 }
 
 resource "aws_instance" "instance" {
