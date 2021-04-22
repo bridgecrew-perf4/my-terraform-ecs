@@ -26,7 +26,7 @@ resource "aws_iam_role_policy" "my_ecs_policy" {
 	Version = "2012-10-17"
     Statement = [
     	{
- 			Sid = ""
+ 	    Sid = ""
             Effect = "Allow"
             Action = [
             	"ec2:DescribeTags",
