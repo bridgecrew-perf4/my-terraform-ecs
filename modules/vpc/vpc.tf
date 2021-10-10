@@ -111,6 +111,18 @@ resource "aws_security_group" "alb" {
         create_before_destroy = true
     }
 
+    ingress {
+        description = "Ingress for alb_sg"
+        from_port   = 22
+        to_port     = 22
+        protocol    = "tcp"
+        cidr_blocks = ["${module.myip.address}/32"]
+        prefix_list_ids  = []
+        security_groups  = []
+        ipv6_cidr_blocks = []
+        self = false
+    }
+
     depends_on  = ["aws_vpc.aws_vpc"]
 }
 
@@ -134,7 +146,7 @@ resource "aws_security_group" "efs" {
         protocol    = "-1"
         cidr_blocks = ["${var.vpc_cidr}"]
     }
-    
+
     depends_on  = ["aws_vpc.aws_vpc"]
 }
 
@@ -259,6 +271,66 @@ resource "aws_security_group_rule" "fargate_to_alb" {
     from_port           = 2368
     to_port             = 2368
     protocol            = "tcp"
+}
+
+resource "aws_security_group_rule" "mysql_to_ec2" {
+    type                = "ingress"
+    description         = "Ingress from mysql to e2c_pool"
+    security_group_id   = "${aws_security_group.mysql.id}"
+    source_security_group_id = "${aws_security_group.ec2_pool.id}"
+    from_port           = 3306
+    to_port             = 3306
+    protocol            = "tcp"
+}
+
+resource "aws_security_group_rule" "mysql_to_fargate" {
+    type                = "ingress"
+    description         = "Ingress from mysql to fargate"
+    security_group_id   = "${aws_security_group.mysql.id}"
+    source_security_group_id = "${aws_security_group.fargate_pool.id}"
+    from_port           = 3306
+    to_port             = 3306
+    protocol            = "tcp"
+}
+
+resource "aws_security_group_rule" "efs_to_ec2" {
+    type                = "ingress"
+    description         = "Ingress from efs to e2c_pool"
+    security_group_id   = "${aws_security_group.efs.id}"
+    source_security_group_id = "${aws_security_group.ec2_pool.id}"
+    from_port           = 2049
+    to_port             = 2049
+    protocol            = "tcp"
+}
+
+resource "aws_security_group_rule" "efs_to_fargate" {
+    type                = "ingress"
+    description         = "Ingress from efs to fargate"
+    security_group_id   = "${aws_security_group.efs.id}"
+    source_security_group_id = "${aws_security_group.fargate_pool.id}"
+    from_port           = 2049
+    to_port             = 2049
+    protocol            = "tcp"
+}
+
+resource "aws_security_group_rule" "alb_to_ec2" {
+    type                = "egress"
+    description         = "Engress from alb to e2c_pool"
+    security_group_id   = "${aws_security_group.alb.id}"
+    source_security_group_id = "${aws_security_group.ec2_pool.id}"
+    from_port           = 0
+    to_port             = 0
+    protocol            = "-1"
+}
+
+resource "aws_security_group_rule" "alb_to_fargate" {
+    type                = "egress"
+    description         = "Engress from alb to fargate"
+    security_group_id   = "${aws_security_group.alb.id}"
+    source_security_group_id = "${aws_security_group.fargate_pool.id}"
+    from_port           = 0
+    to_port             = 0
+    protocol            = "-1"
 }
 
 resource "aws_subnet" "public_subnet" {
