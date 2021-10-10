@@ -134,6 +134,7 @@ resource "aws_security_group" "efs" {
         protocol    = "-1"
         cidr_blocks = ["${var.vpc_cidr}"]
     }
+    
     depends_on  = ["aws_vpc.aws_vpc"]
 }
 
