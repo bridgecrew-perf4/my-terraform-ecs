@@ -3,9 +3,14 @@ variable "vpc_cidr" {
   default = "10.0.0.0/16"
 }
 
+variable "igw_name" {
+    description = "My CloudX IGW"
+    default = "cloudx-igw"
+}
+
 variable "vpc_name" {
   description = "My vpc name"
-  default = "ecs-vpc"
+  default = "cloudx"
 }
 
 variable "name" {
@@ -30,42 +35,59 @@ variable "createdby" {
 
 variable "allowed_ports" {
     description = "Allowed ports from/to host"
-    type        = "list"
+    type        = list(string)
     default     = ["80", "8080"]
 }
 
 variable "public_subnet_cidrs" {
     description = "CIDR for the Public Subnet"
-    type        = "list"
+    type        = list(string)
     default     = []
 }
 
 variable "availability_zone" {
 	description = "The AZ for the subnet"
-    type		= "list"
+    type		= list(string)
 	default     = []
-}
-
-variable "private_subnet_cidrs" {
-    description = "CIDR for the Private Subnet"
-    type        = "list"
-    default     = ["use1-az1", "use1-az2"]
 }
 
 variable "availability_zones" {
     description = "A list of Availability zones in the region"
-    type        = "list"
-    default     = ["use1-az1", "use1-az2"]
+    type        = list(string)
+    default     = ["use1-az1", "use1-az2", "use1-az3"]
 }
 
 variable "public_cidr_block" {
-    type        = "list"
-    default     = ["172.32.1.0/24", "172.32.3.0/24"]
+    type        = list(string)
+    default     = ["10.10.1.0/24", "10.10.2.0/24", "10.10.3.0/24"]
+}
+
+variable "public_subnet_name" {
+    description = "Public subnet name"
+    type        = list(string)
+    default     = ["public_a", "public_b", "public_c"]
 }
 
 variable "private_cidr_block" {
-    type        = "list"
-    default     = ["172.32.2.0/24", "172.32.4.0/24"]
+    type        = list(string)
+    default     = ["10.10.10.0/24", "10.10.11.0/24", "10.10.12.0/24"]
+}
+
+variable "private_subnet_name" {
+    description = "Private subnet name"
+    type        = list(string)
+    default     = ["private_a", "private_b", "private_c"]
+}
+
+variable "db_cidr_block" {
+    type        = list(string)
+    default     = ["10.10.20.0/24", "10.10.21.0/24", "10.10.22.0/24"]
+}
+
+variable "private_db_subnet_name" {
+    description = "Private db subnet name"
+    type        = list(string)
+    default     = ["private_db_a", "private_db_b", "private_db_c"]
 }
 
 variable "enable_internet_gateway" {
