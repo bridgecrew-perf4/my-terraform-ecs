@@ -12,3 +12,8 @@ module "aws_vpc" {
     enable_internet_gateway		        = "true"
 
 }
+
+module "db" {
+  source  = "terraform-aws-modules/rds/aws"
+  version = "~> 3.0"
+}
