@@ -14,6 +14,18 @@ module "aws_vpc" {
 }
 
 module "db" {
-  source  = "terraform-aws-modules/rds/aws"
-  version = "~> 3.0"
+    source  = "terraform-aws-modules/rds/aws"
+    version = "~> 3.0"
+
+    identifier              = "ghost"
+    engine                  = "mysql"
+    engine_version          = "8.0.20"
+    family                  = "mysql8.0" # DB parameter group
+    major_engine_version    = "8.0"      # DB option group
+    instance_class          = "db.t2.micro"
+    skip_final_snapshot     = true
+    auto_minor_version_upgrade  = false
+
+    allocated_storage       = 20
+    storage_type            = "gp2"
 }
