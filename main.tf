@@ -1,5 +1,6 @@
 provider "aws" {
-  region = "${var.aws-region}"
+#   region = "${var.aws-region}"
+  region  = "us-east-1"
   shared_credentials_file = "~/.aws/credentials"
 }
 
@@ -13,9 +14,9 @@ module "aws_vpc" {
 
 }
 
-module "db" {
+module "rds" {
     source  = "terraform-aws-modules/rds/aws"
-    version = "~> 3.0"
+    # source  = "./modules/rds"
 
     identifier              = "ghost"
     engine                  = "mysql"
