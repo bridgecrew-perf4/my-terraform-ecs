@@ -21,7 +21,7 @@ resource "aws_internet_gateway" "default" {
         Createdby       = "${var.createdby}"
     }
 
-	depends_on  = ["aws_vpc.aws_vpc"]
+	depends_on  = [aws_vpc.aws_vpc]
 }
 
 resource "aws_route_table" "public_rt" {
@@ -38,7 +38,7 @@ resource "aws_route_table" "public_rt" {
         Createdby       = "${var.createdby}"
     }
 
-   depends_on  = ["aws_internet_gateway.default"]
+   depends_on  = [aws_internet_gateway.default]
 
 }
 
@@ -71,7 +71,7 @@ resource "aws_security_group" "sg" {
         cidr_blocks = ["0.0.0.0/0"]
     }
 
-    depends_on  = ["aws_vpc.aws_vpc"]
+    depends_on  = [aws_vpc.aws_vpc]
 }
 
 resource "aws_security_group_rule" "ingress_ports" {
@@ -83,7 +83,7 @@ resource "aws_security_group_rule" "ingress_ports" {
     protocol            = "tcp"
     cidr_blocks         = ["0.0.0.0/0"]
 
-    depends_on  = ["aws_security_group.sg"]
+    depends_on  = [aws_security_group.sg]
 }
 
 resource "aws_security_group_rule" "egress_ports" {
@@ -95,7 +95,7 @@ resource "aws_security_group_rule" "egress_ports" {
     protocol            = "tcp"
     cidr_blocks         = ["0.0.0.0/0"]
 
-    depends_on  = ["aws_security_group.sg"]
+    depends_on  = [aws_security_group.sg]
 }
 
 resource "aws_subnet" "public_subnet" {
@@ -112,7 +112,7 @@ resource "aws_subnet" "public_subnet" {
         Createdby       = "${var.createdby}"
     }
 
-    depends_on  = ["aws_vpc.aws_vpc"]
+    depends_on  = [aws_vpc.aws_vpc]
 }
 
 resource "aws_subnet" "private_subnet" {
@@ -129,7 +129,7 @@ resource "aws_subnet" "private_subnet" {
         Createdby       = "${var.createdby}"
     }
 
-    depends_on  = ["aws_vpc.aws_vpc"]
+    depends_on  = [aws_vpc.aws_vpc]
 }
 
 resource "aws_route_table_association" "a" {

@@ -1,6 +1,7 @@
 provider "aws" {
   region = "${var.aws-region}"
   shared_credentials_file = "~/.aws/credentials"
+  version = "~> 2.64.0"
 }
 
 module "iam" {
@@ -17,14 +18,14 @@ module "aws_vpc" {
     public_cidr_block                   = ["172.32.1.0/24", "172.32.3.0/24"]
     private_cidr_block                  = ["172.32.2.0/24", "172.32.4.0/24"]
     allowed_ports                       = ["80", "443", "8080", "8443"]
-    availability_zone			= ["use1-az1", "use1-az2"]
-    enable_internet_gateway		= "true"
+    availability_zone		        	= ["use1-az1", "use1-az2"]
+    enable_internet_gateway	        	= "true"
 }
 
 module "ecs" {
 	source                              = "./modules/ecs"
 	name                         	    = "my-ecs"
-	ecs-cluster-name		    = "ec2-cluster"
+	ecs-cluster-name		            = "ec2-cluster"
 	environment                         = "test"
 }
 

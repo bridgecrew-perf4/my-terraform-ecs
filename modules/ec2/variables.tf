@@ -30,7 +30,7 @@ variable "createdby" {
 
 variable "ami" {
     description = "I added only 3 regions to show the map feature but you can add all"
-    type        = "map"
+    type        = map
     default     = {
         us-east-1 = "ami-047a51fa27710816e"
         us-west-1 = "ami-005c06c6de69aee84"
@@ -159,5 +159,5 @@ variable "network_interface" {
 
 variable "vpc_security_group_ids" {
     description = " SG for EC2"
-    type        = "list"
+    type        = list
 }

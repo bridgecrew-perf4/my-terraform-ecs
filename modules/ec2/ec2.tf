@@ -11,11 +11,15 @@ resource "aws_key_pair" "my_keypair" {
     key_name   = "${uuid()}"
     public_key = "${tls_private_key.t.public_key_openssh}"
 }
+
 provider "tls" {}
+
 resource "tls_private_key" "t" {
     algorithm = "RSA"
 }
+
 provider "local" {}
+
 resource "local_file" "key" {
     content  = "${tls_private_key.t.private_key_pem}"
     filename = "/root/.ssh/ec2_key"
@@ -66,7 +70,7 @@ resource "aws_instance" "instance" {
         Createdby       = "${var.createdby}"
     }
 
-    depends_on = ["aws_key_pair.my_keypair"]
+    depends_on = [aws_key_pair.my_keypair]
 }
 
 output "ec2_instance_type" {

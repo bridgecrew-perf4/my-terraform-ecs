@@ -26,5 +26,5 @@ resource "aws_ecs_task_definition" "service" {
 ]
   TASK_DEFINITION
 
-  depends_on = ["aws_ecs_cluster.my-test-ecs"]
+  depends_on = [aws_ecs_cluster.my-test-ecs]
 }

@@ -30,41 +30,41 @@ variable "createdby" {
 
 variable "allowed_ports" {
     description = "Allowed ports from/to host"
-    type        = "list"
+    type        = list
     default     = ["80", "8080"]
 }
 
 variable "public_subnet_cidrs" {
     description = "CIDR for the Public Subnet"
-    type        = "list"
+    type        = list
     default     = []
 }
 
 variable "availability_zone" {
 	description = "The AZ for the subnet"
-    type		= "list"
+    type		= list
 	default     = []
 }
 
 variable "private_subnet_cidrs" {
     description = "CIDR for the Private Subnet"
-    type        = "list"
+    type        = list
     default     = ["use1-az1", "use1-az2"]
 }
 
 variable "availability_zones" {
     description = "A list of Availability zones in the region"
-    type        = "list"
+    type        = list
     default     = ["use1-az1", "use1-az2"]
 }
 
 variable "public_cidr_block" {
-    type        = "list"
+    type        = list
     default     = ["172.32.1.0/24", "172.32.3.0/24"]
 }
 
 variable "private_cidr_block" {
-    type        = "list"
+    type        = list
     default     = ["172.32.2.0/24", "172.32.4.0/24"]
 }
 
