@@ -22,9 +22,9 @@ provider "local" {}
 
 resource "local_file" "key" {
     content  = "${tls_private_key.t.private_key_pem}"
-    filename = "/root/.ssh/ec2_key"
+    filename = "${var.home_dir}/.ssh/autogenerate_ec2_key.key"
     provisioner "local-exec" {
-        command = "chmod 600 /root/.ssh/ec2_key"
+        command = "chmod 600 ${var.home_dir}/.ssh/autogenerate_ec2_key.key"
     }
 }
 

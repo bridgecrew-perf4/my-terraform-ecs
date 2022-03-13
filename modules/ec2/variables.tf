@@ -3,6 +3,8 @@
 #-----------------------------------------------------------
 variable "ecs_cluster" {}
 
+variable "home_dir" {}
+
 variable "name" {
   description = "Name to be used on all resources as prefix"
   default     = "TEST-EC2"

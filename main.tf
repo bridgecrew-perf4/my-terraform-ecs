@@ -38,6 +38,7 @@ module "ec2" {
     key_path                            = "/root/.ssh/id_rsa.pub"
     iam_instance_profile                = "${module.iam.iam-profile-name}"
     ecs_cluster		                    = "${module.ecs.ecs_cluster_name}"
+    home_dir                            = "${var.home_dir}"
 }
 
 output "connection-string" {
