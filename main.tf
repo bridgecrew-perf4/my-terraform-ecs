@@ -22,14 +22,21 @@ module "aws_vpc" {
     enable_internet_gateway	        	= "true"
 }
 
-module "ecs" {
-	source                              = "./modules/ecs"
-	name                         	    = "my-ecs"
+module "ecs-worker-fleet" {
+	source                              = "./modules/ecs_workers"
+	name                         	    = "ecs-workers"
 	ecs-cluster-name		            = "ec2-cluster"
 	environment                         = "test"
 }
 
-module "ec2" {
+# module "ecs-control-plane" {
+# 	source                              = "./modules/ecs"
+# 	name                         	    = "my-ecs-control-plane"
+# 	ecs-cluster-name		            = "ec2-cluster"
+# 	environment                         = "test"
+# }
+
+module "ec2-worker" {
     source                              = "./modules/ec2"
     name                                = "myEC2"
     environment                         = "test"
@@ -37,10 +44,10 @@ module "ec2" {
     subnet_id                           = "${module.aws_vpc.publicsubnet_id_0}"
     key_path                            = "/root/.ssh/id_rsa.pub"
     iam_instance_profile                = "${module.iam.iam-profile-name}"
-    ecs_cluster		                    = "${module.ecs.ecs_cluster_name}"
+    ecs_cluster		                    = "${module.ecs-worker-fleet.ecs_cluster_name}"
     home_dir                            = "${var.home_dir}"
 }
 
 output "connection-string" {
-	value = module.ec2.ec2_public_ip
+	value = module.ec2-worker.ec2_public_ip
 }

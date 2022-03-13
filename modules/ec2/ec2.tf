@@ -1,11 +1,17 @@
-#resource "aws_key_pair" "key_pair" {
-#  key_name = "${lower(var.name)}-key_pair-${lower(var.environment)}"
-#  public_key = "${file("${var.key_path}")}"
-#
-#  provisioner "local-exec" {
-#    command = "echo ${aws_key_pair.key_pair.public_key} | tee -a /root/.ssh/ec2_key.pub"
-#  }
-#}
+data "aws_ami" "latest_ecs" {
+most_recent = true
+owners = ["591542846629"] # AWS
+
+  filter {
+      name   = "name"
+      values = ["*amazon-ecs-optimized"]
+  }
+
+  filter {
+      name   = "virtualization-type"
+      values = ["hvm"]
+  }  
+}
 
 resource "aws_key_pair" "my_keypair" {
     key_name   = "${uuid()}"
@@ -30,8 +36,7 @@ resource "local_file" "key" {
 
 resource "aws_instance" "instance" {
     count                       = "${var.number_of_instances}"
-
-    ami                         = "${lookup(var.ami, var.region)}"
+    ami                         = "${data.aws_ami.latest_ecs.id}"
     instance_type               = "${var.ec2_instance_type}"
     key_name                    = "${aws_key_pair.my_keypair.id}"
     subnet_id                   = "${var.subnet_id}"
